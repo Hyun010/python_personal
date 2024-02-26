@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request,url_for
 import random, os
 from flask_sqlalchemy import SQLAlchemy
-import sqlite3
 
 basedir=os.path.abspath(os.path.dirname(__file__))
 app=Flask(__name__)
