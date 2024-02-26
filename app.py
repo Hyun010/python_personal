@@ -21,7 +21,12 @@ with app.app_context():
 
 @app.route('/')
 def home():
-    user_rsp=request.args.get('user_rsp')
+    #input 받은 값을 flask에서 사용하는 부분(NONE값이 처음 들어갈때 생기는 오류를 방지하기 위해)
+    if(request.args.get('user_rsp') is None):
+        user_rsp='✊'
+    else:
+        user_rsp=request.args.get('user_rsp')
+    #컴퓨터 랜덤 가위바위보 정하기
     random_com=random.randint(1,3)
     if(random_com==1):
         com_rsp='✊'
@@ -30,6 +35,7 @@ def home():
     elif(random_com==3):
         com_rsp='✋'
 
+    #승패무 결정하는 곳
     if(com_rsp==user_rsp):#무
         c_res='무'
     elif((com_rsp=='✊'and user_rsp=='✋') or (com_rsp=='✌'and user_rsp=='✊') or (com_rsp=='✋' and user_rsp=='✌')):#승리
@@ -37,10 +43,12 @@ def home():
     else: #패
         c_res='패'
 
+    #DB에 결과 저장하는 곳
     res=result(com_rsp=com_rsp,user_rsp=user_rsp,resulting=c_res)
     db.session.add(res)
     db.session.commit()
 
+    #승패무 카운트 하는 곳 + html에서 나타내기 위한 데이터 만드는 곳
     history_game=result.query.all()
     cnt_d=result.query.filter_by(resulting='무').count()
     cnt_w=result.query.filter_by(resulting='승').count()
@@ -48,6 +56,7 @@ def home():
     context=[history_game,cnt_d,cnt_l,cnt_w,user_rsp,com_rsp,c_res]
     return render_template('index.html',data=context)
 
+#DB에서 제거해서 새게임 하게 만드는 곳
 @app.route('/cleanup', methods=['POST'])
 def cleanup():
     b=result.query.all()
