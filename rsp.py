@@ -37,7 +37,7 @@ while start==0:
 
     #재시작 물어보기 & 종료시 통계 출력
     while True:
-        restart=input('재시작을 하시겠습니까?(y/n)')
+        restart=input('재시작을 하시겠습니까?(y/n)').lower
         if(restart=='n'):
             start=1
             print('게임을 종료합니다.')
